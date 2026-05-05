@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="College Canteen - Order food online from your college canteen. Browse menu, place orders, and skip the queue.">
+  <title>Campus Bites - College Canteen</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====== TOAST CONTAINER ====== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ====== MANAGER LOGIN MODAL ====== -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal">
+      <h2>🔐 Manager Login</h2>
+      <p>Enter the manager password to access the dashboard.</p>
+      <div class="input-group">
+        <label for="manager-password">Password</label>
+        <input type="password" id="manager-password" class="input" placeholder="Enter password...">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeLoginModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="handleManagerLogin()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== LANDING PAGE ====== -->
+  <section id="landing">
+    <div class="landing-content">
+      <div class="landing-emoji">🍽️</div>
+      <h1 class="landing-title">Campus Bites</h1>
+      <p class="landing-sub">Order delicious food from your college canteen. Skip the queue, enjoy your meal.</p>
+      <div class="landing-buttons">
+        <button class="btn btn-primary" id="student-entry-btn" onclick="enterAsStudent()">🎓 I'm a Student</button>
+        <button class="btn btn-secondary" id="manager-entry-btn" onclick="openLoginModal()">👨‍🍳 Manager Login</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== TOPBAR ====== -->
+  <header class="topbar hidden" id="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand" onclick="goHome()">
+        <span>🍽️</span> Campus Bites
+      </div>
+      <div class="topbar-actions">
+        <span class="topbar-role" id="role-badge"></span>
+        <button class="btn btn-sm btn-secondary hidden" id="my-orders-btn" onclick="showMyOrders()">📋 My Orders</button>
+        <button class="btn-icon cart-btn hidden" id="cart-toggle" onclick="toggleCart()">
+          🛒
+          <span class="cart-badge hidden" id="cart-badge">0</span>
+        </button>
+        <button class="btn btn-sm btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== STUDENT MENU ====== -->
+  <section id="student-menu" class="hidden">
+    <div class="container">
+      <div class="menu-header">
+        <h1>Today's Menu</h1>
+        <div class="menu-controls">
+          <div class="search-box">
+            <input type="text" class="input" id="search-input" placeholder="Search food items..." oninput="handleSearch()">
+          </div>
+        </div>
+        <div class="category-filters" id="category-filters"></div>
+      </div>
+      <div class="menu-grid" id="menu-grid"></div>
+      <div class="empty-state hidden" id="menu-empty">
+        <span>🔍</span>
+        <h3>No items found</h3>
+        <p>Try a different search or category.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CART SIDEBAR ====== -->
+  <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2>🛒 Your Cart</h2>
+      <button class="btn-icon" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer" style="display:none;">
+      <div class="cart-total">
+        <span>Total</span>
+        <span class="amount" id="cart-total">0</span>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="showCheckout()">Proceed to Order</button>
+    </div>
+    <div class="checkout-form hidden" id="checkout-form">
+      <h3 style="margin-bottom:16px;">Place Order</h3>
+      <div class="input-group">
+        <label for="cust-name">Your Name</label>
+        <input type="text" id="cust-name" class="input" placeholder="Enter your name">
+      </div>
+      <div class="input-group" style="margin-top:12px;">
+        <label for="cust-roll">Roll Number</label>
+        <input type="text" id="cust-roll" class="input" placeholder="Enter roll number">
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="hideCheckout()">Back</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="placeOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ====== STUDENT ORDER HISTORY ====== -->
+  <section id="student-orders" class="hidden">
+    <div class="container">
+      <div class="menu-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <h1>📋 My Orders</h1>
+        <button class="btn btn-sm btn-secondary" onclick="enterAsStudent()">← Back to Menu</button>
+      </div>
+      <div id="student-orders-list" class="orders-list"></div>
+    </div>
+  </section>
+
+  <!-- ====== ORDER SUCCESS ====== -->
+  <section id="order-success" class="hidden">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title">Order Placed!</h2>
+    <p class="success-msg">Your order has been sent to the canteen.</p>
+    <p class="success-order-id" id="success-order-id"></p>
+    <button class="btn btn-primary" onclick="backToMenu()">Order More</button>
+  </section>
+
+  <!-- ====== MANAGER DASHBOARD ====== -->
+  <section id="manager-dashboard" class="hidden">
+    <div class="container">
+      <div class="manager-header">
+        <h1>Manager Dashboard</h1>
+        <button class="btn btn-primary" onclick="switchManagerTab('add')">+ Add Item</button>
+      </div>
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="label">Menu Items</div><div class="value" id="stat-items">0</div></div>
+        <div class="stat-card"><div class="label">Total Orders</div><div class="value" id="stat-orders">0</div></div>
+        <div class="stat-card"><div class="label">Revenue</div><div class="value accent" id="stat-revenue">₹0</div></div>
+      </div>
+      <div class="manager-tabs">
+        <button class="tab-btn active" data-tab="menu" onclick="switchManagerTab('menu')">Menu Items</button>
+        <button class="tab-btn" data-tab="orders" onclick="switchManagerTab('orders')">Orders</button>
+        <button class="tab-btn" data-tab="add" onclick="switchManagerTab('add')">Add Item</button>
+      </div>
+
+      <!-- Tab: Menu Items -->
+      <div class="tab-content" id="tab-menu">
+        <div class="manager-menu-grid" id="manager-menu-grid"></div>
+      </div>
+
+      <!-- Tab: Orders -->
+      <div class="tab-content hidden" id="tab-orders">
+        <div class="orders-list" id="manager-orders-list"></div>
+      </div>
+
+      <!-- Tab: Add Item -->
+      <div class="tab-content hidden" id="tab-add">
+        <div class="add-item-form">
+          <h2>Add New Menu Item</h2>
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="item-name">Item Name</label>
+              <input type="text" id="item-name" class="input" placeholder="e.g. Masala Dosa">
+            </div>
+            <div class="input-group">
+              <label for="item-price">Price (₹)</label>
+              <input type="number" id="item-price" class="input" placeholder="e.g. 40">
+            </div>
+            <div class="input-group">
+              <label for="item-category">Category</label>
+              <select id="item-category">
+                <option value="Snacks">Snacks</option>
+                <option value="Meals">Meals</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Desserts">Desserts</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="item-image">Upload Image (optional)</label>
+              <input type="file" id="item-image" class="input" accept="image/*" onchange="handleImageUpload(event)">
+              <div id="image-preview" style="margin-top:8px;display:none;">
+                <img id="image-preview-img" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border-glass);">
+              </div>
+            </div>
+            <div class="input-group full">
+              <label for="item-desc">Description</label>
+              <textarea id="item-desc" placeholder="A short description of the item..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addMenuItem()">Add Item</button>
+            <button class="btn btn-secondary" onclick="switchManagerTab('menu')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/ui.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
