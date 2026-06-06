@@ -94,9 +94,9 @@ function renderCartItems() {
 
   container.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <img class="cart-item-img" src="${item.image}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
+      <img class="cart-item-img" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
       <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-name">${escapeHtml(item.name)}</div>
         <div class="cart-item-price">₹${item.price * item.qty}</div>
       </div>
       <div class="cart-item-qty">
@@ -116,7 +116,8 @@ function showCheckout() {
 }
 
 function hideCheckout() {
-  document.getElementById('cart-footer').style.display = 'block';
+  const cart = getCart();
+  document.getElementById('cart-footer').style.display = cart.length > 0 ? 'block' : 'none';
   document.getElementById('cart-items').style.display = 'block';
   document.getElementById('checkout-form').classList.add('hidden');
 }

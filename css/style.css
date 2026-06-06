@@ -193,7 +193,7 @@ textarea { resize: vertical; min-height: 80px; }
 .search-box .input { padding-left: 44px; }
 .search-box::before {
   content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  font-size: 1rem; z-index: 1;
+  font-size: 1rem; z-index: 1; pointer-events: none;
 }
 .category-filters { display: flex; gap: 8px; flex-wrap: wrap; }
 .cat-btn {

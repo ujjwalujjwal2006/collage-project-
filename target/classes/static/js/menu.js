@@ -39,8 +39,8 @@ async function addMenuItem() {
   const desc = document.getElementById('item-desc').value.trim();
   const imageFile = document.getElementById('item-image').files[0];
 
-  if (!name || !price) {
-    showToast('Please fill in name and price.', 'error');
+  if (!name || isNaN(price) || price <= 0) {
+    showToast('Please fill in name and a valid price.', 'error');
     return;
   }
 
@@ -66,7 +66,7 @@ async function addMenuItem() {
     document.getElementById('item-desc').value = '';
     uploadedImageData = '';
     document.getElementById('image-preview').style.display = 'none';
-    document.getElementById('item-image').value = null;
+    document.getElementById('item-image').value = '';
 
     showToast(`"${name}" added to menu!`, 'success');
     renderManagerMenu();
@@ -110,11 +110,11 @@ async function renderStudentMenu() {
   empty.classList.add('hidden');
   grid.innerHTML = items.map(item => `
     <div class="menu-card">
-      <img class="menu-card-img" src="${item.imageUrl}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
+      <img class="menu-card-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.name)}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
       <div class="menu-card-body">
-        <span class="menu-card-cat">${item.category}</span>
-        <h3 class="menu-card-name">${item.name}</h3>
-        <p class="menu-card-desc">${item.description}</p>
+        <span class="menu-card-cat">${escapeHtml(item.category)}</span>
+        <h3 class="menu-card-name">${escapeHtml(item.name)}</h3>
+        <p class="menu-card-desc">${escapeHtml(item.description)}</p>
         <div class="menu-card-footer">
           <span class="menu-card-price">${item.price}</span>
           <button class="add-cart-btn" onclick="addToCart(${item.id})">+ Add</button>
@@ -156,10 +156,10 @@ async function renderManagerMenu() {
 
   grid.innerHTML = items.map(item => `
     <div class="manager-menu-card">
-      <img src="${item.imageUrl}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
+      <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.name)}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
       <div class="info">
-        <h3>${item.name}</h3>
-        <p>${item.category}</p>
+        <h3>${escapeHtml(item.name)}</h3>
+        <p>${escapeHtml(item.category)}</p>
       </div>
       <span class="price">${item.price}</span>
       <button class="btn btn-danger btn-sm" onclick="deleteMenuItem(${item.id})">Delete</button>

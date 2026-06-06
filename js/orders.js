@@ -99,7 +99,7 @@ function renderManagerOrders() {
   const nextLabels = { pending: 'Mark Ready', ready: 'Mark Picked Up' };
 
   container.innerHTML = orders.map(order => {
-    const itemsList = order.items.map(i => `${i.name} x${i.qty}`).join(', ');
+    const itemsList = order.items.map(i => `${escapeHtml(i.name)} x${i.qty}`).join(', ');
     const time = new Date(order.time).toLocaleString();
     return `
       <div class="order-card">
@@ -107,8 +107,8 @@ function renderManagerOrders() {
           <span class="order-id">${order.id}</span>
           <span class="order-status ${order.status}">${statusLabels[order.status]}</span>
         </div>
-        <div class="order-customer">👤 ${order.customer} (${order.roll}) · ${time}</div>
-        <div class="order-items">🍽️ ${itemsList}</div>
+        <div class="order-customer">👤 ${escapeHtml(order.customer)} (${escapeHtml(order.roll)}) · ${time}</div>
+        <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
         <div class="order-bottom">
           <span class="order-total">${order.total}</span>
           <div class="order-actions">
@@ -154,7 +154,7 @@ function renderStudentOrders() {
   const steps = ['pending', 'ready', 'picked'];
 
   container.innerHTML = orders.map(order => {
-    const itemsList = order.items.map(i => `${i.name} × ${i.qty}`).join(', ');
+    const itemsList = order.items.map(i => `${escapeHtml(i.name)} × ${i.qty}`).join(', ');
     const time = new Date(order.time).toLocaleString();
     const stepIdx = steps.indexOf(order.status);
 
@@ -174,7 +174,7 @@ function renderStudentOrders() {
           <span class="order-status ${order.status}">${statusIcons[order.status]} ${statusLabels[order.status]}</span>
         </div>
         <div class="order-customer">🕐 ${time}</div>
-        <div class="order-items">🍽️ ${itemsList}</div>
+        <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
         <div class="order-tracker">${progressHTML}</div>
         <div class="order-bottom">
           <span class="order-total">${order.total}</span>

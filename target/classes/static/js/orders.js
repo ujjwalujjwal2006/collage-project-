@@ -95,7 +95,7 @@ async function renderManagerOrders() {
     const nextLabels = { PENDING: 'Mark Ready', READY: 'Mark Picked Up' };
 
     container.innerHTML = orders.map(order => {
-      const itemsList = order.items.map(i => `${i.name} x${i.quantity}`).join(', ');
+      const itemsList = order.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
       const time = new Date(order.createdAt).toLocaleString();
       const statusClass = statusClasses[order.status] || 'pending';
       return `
@@ -104,8 +104,8 @@ async function renderManagerOrders() {
             <span class="order-id">${order.id}</span>
             <span class="order-status ${statusClass}">${statusLabels[order.status]}</span>
           </div>
-          <div class="order-customer">👤 ${order.customerName} (${order.rollNumber}) · ${time}</div>
-          <div class="order-items">🍽️ ${itemsList}</div>
+          <div class="order-customer">👤 ${escapeHtml(order.customerName)} (${escapeHtml(order.rollNumber)}) · ${time}</div>
+          <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
           <div class="order-bottom">
             <span class="order-total">${order.total}</span>
             <div class="order-actions">
@@ -166,7 +166,7 @@ async function renderStudentOrders() {
     const steps = ['PENDING', 'READY', 'PICKED'];
 
     container.innerHTML = orders.map(order => {
-      const itemsList = order.items.map(i => `${i.name} × ${i.quantity}`).join(', ');
+      const itemsList = order.items.map(i => `${escapeHtml(i.name)} × ${i.quantity}`).join(', ');
       const time = new Date(order.createdAt).toLocaleString();
       const stepIdx = steps.indexOf(order.status);
       const statusClass = statusClasses[order.status] || 'pending';
@@ -187,7 +187,7 @@ async function renderStudentOrders() {
             <span class="order-status ${statusClass}">${statusIcons[order.status]} ${statusLabels[order.status]}</span>
           </div>
           <div class="order-customer">🕐 ${time}</div>
-          <div class="order-items">🍽️ ${itemsList}</div>
+          <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
           <div class="order-tracker">${progressHTML}</div>
           <div class="order-bottom">
             <span class="order-total">${order.total}</span>
