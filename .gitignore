@@ -1,0 +1,17 @@
+# Build output
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (optional, remove if you want to track it)
+# .mvn/wrapper/maven-wrapper.jar
+
+# Database files
+data/*.trace.db
