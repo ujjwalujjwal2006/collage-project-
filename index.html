@@ -95,21 +95,38 @@
       </div>
       <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="showCheckout()">Proceed to Order</button>
     </div>
-    <div class="checkout-form hidden" id="checkout-form">
-      <h3 style="margin-bottom:16px;">Place Order</h3>
-      <div class="input-group">
-        <label for="cust-name">Your Name</label>
-        <input type="text" id="cust-name" class="input" placeholder="Enter your name">
+      <div class="checkout-form hidden" id="checkout-form">
+        <h3 style="margin-bottom:16px;">Place Order</h3>
+        <div class="input-group">
+          <label for="cust-name">Your Name</label>
+          <input type="text" id="cust-name" class="input" placeholder="Enter your name">
+        </div>
+        <div class="input-group" style="margin-top:12px;">
+          <label for="cust-roll">Roll Number</label>
+          <input type="text" id="cust-roll" class="input" placeholder="Enter roll number">
+        </div>
+        <div class="input-group" style="margin-top:12px;">
+          <label>Payment Method</label>
+          <div class="payment-methods" id="payment-methods">
+            <button class="payment-btn active" data-method="cash" onclick="selectPayment('cash')">
+              <span class="payment-icon">💵</span>
+              <span>Cash</span>
+            </button>
+            <button class="payment-btn" data-method="upi" onclick="selectPayment('upi')">
+              <span class="payment-icon">📱</span>
+              <span>UPI</span>
+            </button>
+            <button class="payment-btn" data-method="card" onclick="selectPayment('card')">
+              <span class="payment-icon">💳</span>
+              <span>Card</span>
+            </button>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="hideCheckout()">Back</button>
+          <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="placeOrder()">Confirm Order</button>
+        </div>
       </div>
-      <div class="input-group" style="margin-top:12px;">
-        <label for="cust-roll">Roll Number</label>
-        <input type="text" id="cust-roll" class="input" placeholder="Enter roll number">
-      </div>
-      <div style="margin-top:20px;display:flex;gap:12px;">
-        <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="hideCheckout()">Back</button>
-        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="placeOrder()">Confirm Order</button>
-      </div>
-    </div>
   </aside>
 
   <!-- ====== STUDENT ORDER HISTORY ====== -->

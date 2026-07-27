@@ -27,6 +27,8 @@ function placeOrder() {
     return;
   }
 
+  const paymentIcons = { cash: '💵', upi: '📱', card: '💳' };
+  const paymentMethod = getSelectedPayment();
   const order = {
     id: generateOrderId(),
     customer: name,
@@ -34,6 +36,7 @@ function placeOrder() {
     items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
     total: getCartTotal(),
     status: 'pending',
+    payment: paymentMethod,
     time: new Date().toISOString()
   };
 
@@ -97,10 +100,13 @@ function renderManagerOrders() {
 
   const statusLabels = { pending: 'Pending', ready: 'Ready', picked: 'Picked Up' };
   const nextLabels = { pending: 'Mark Ready', ready: 'Mark Picked Up' };
+  const paymentIcons = { cash: '💵', upi: '📱', card: '💳' };
+  const paymentLabels = { cash: 'Cash', upi: 'UPI', card: 'Card' };
 
   container.innerHTML = orders.map(order => {
     const itemsList = order.items.map(i => `${escapeHtml(i.name)} x${i.qty}`).join(', ');
     const time = new Date(order.time).toLocaleString();
+    const pMethod = order.payment || 'cash';
     return `
       <div class="order-card">
         <div class="order-top">
@@ -110,7 +116,10 @@ function renderManagerOrders() {
         <div class="order-customer">👤 ${escapeHtml(order.customer)} (${escapeHtml(order.roll)}) · ${time}</div>
         <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
         <div class="order-bottom">
-          <span class="order-total">${order.total}</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="order-total">₹${order.total}</span>
+            <span class="payment-badge payment-badge-${pMethod}">${paymentIcons[pMethod]} ${paymentLabels[pMethod]}</span>
+          </div>
           <div class="order-actions">
             ${order.status !== 'picked' ? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus('${order.id}')">${nextLabels[order.status]}</button>` : ''}
             <button class="btn btn-danger btn-sm" onclick="deleteOrder('${order.id}')">Delete</button>
@@ -167,6 +176,9 @@ function renderStudentOrders() {
       </div>`;
     }).join('<div class="track-line"></div>');
 
+    const pMethod = order.payment || 'cash';
+    const paymentIconsS = { cash: '💵', upi: '📱', card: '💳' };
+    const paymentLabelsS = { cash: 'Cash', upi: 'UPI', card: 'Card' };
     return `
       <div class="order-card">
         <div class="order-top">
@@ -177,7 +189,10 @@ function renderStudentOrders() {
         <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
         <div class="order-tracker">${progressHTML}</div>
         <div class="order-bottom">
-          <span class="order-total">${order.total}</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="order-total">₹${order.total}</span>
+            <span class="payment-badge payment-badge-${pMethod}">${paymentIconsS[pMethod]} ${paymentLabelsS[pMethod]}</span>
+          </div>
         </div>
       </div>`;
   }).join('');
