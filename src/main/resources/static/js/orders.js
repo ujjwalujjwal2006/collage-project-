@@ -15,9 +15,11 @@ async function placeOrder() {
     return;
   }
 
+  const paymentMethod = getSelectedPayment();
   const orderData = {
     customer: name,
     roll: roll,
+    payment: paymentMethod,
     items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price }))
   };
 
@@ -93,11 +95,14 @@ async function renderManagerOrders() {
     const statusLabels = { PENDING: 'Pending', READY: 'Ready', PICKED: 'Picked Up' };
     const statusClasses = { PENDING: 'pending', READY: 'ready', PICKED: 'picked' };
     const nextLabels = { PENDING: 'Mark Ready', READY: 'Mark Picked Up' };
+    const paymentIcons = { cash: '💵', upi: '📱', card: '💳' };
+    const paymentLabels = { cash: 'Cash', upi: 'UPI', card: 'Card' };
 
     container.innerHTML = orders.map(order => {
       const itemsList = order.items.map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
       const time = new Date(order.createdAt).toLocaleString();
       const statusClass = statusClasses[order.status] || 'pending';
+      const pMethod = (order.payment || 'cash').toLowerCase();
       return `
         <div class="order-card">
           <div class="order-top">
@@ -107,7 +112,10 @@ async function renderManagerOrders() {
           <div class="order-customer">👤 ${escapeHtml(order.customerName)} (${escapeHtml(order.rollNumber)}) · ${time}</div>
           <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
           <div class="order-bottom">
-            <span class="order-total">${order.total}</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="order-total">₹${order.total}</span>
+              <span class="payment-badge payment-badge-${pMethod}">${paymentIcons[pMethod] || '💵'} ${paymentLabels[pMethod] || 'Cash'}</span>
+            </div>
             <div class="order-actions">
               ${order.status !== 'PICKED' ? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus('${order.id}')">${nextLabels[order.status]}</button>` : ''}
               <button class="btn btn-danger btn-sm" onclick="deleteOrder('${order.id}')">Delete</button>
@@ -164,12 +172,15 @@ async function renderStudentOrders() {
     const statusIcons = { PENDING: '⏳', READY: '✅', PICKED: '🎉' };
     const statusClasses = { PENDING: 'pending', READY: 'ready', PICKED: 'picked' };
     const steps = ['PENDING', 'READY', 'PICKED'];
+    const paymentIcons = { cash: '💵', upi: '📱', card: '💳' };
+    const paymentLabels = { cash: 'Cash', upi: 'UPI', card: 'Card' };
 
     container.innerHTML = orders.map(order => {
       const itemsList = order.items.map(i => `${escapeHtml(i.name)} × ${i.quantity}`).join(', ');
       const time = new Date(order.createdAt).toLocaleString();
       const stepIdx = steps.indexOf(order.status);
       const statusClass = statusClasses[order.status] || 'pending';
+      const pMethod = (order.payment || 'cash').toLowerCase();
 
       const progressHTML = steps.map((step, idx) => {
         const done = idx <= stepIdx;
@@ -190,7 +201,10 @@ async function renderStudentOrders() {
           <div class="order-items">🍽️ ${escapeHtml(itemsList)}</div>
           <div class="order-tracker">${progressHTML}</div>
           <div class="order-bottom">
-            <span class="order-total">${order.total}</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="order-total">₹${order.total}</span>
+              <span class="payment-badge payment-badge-${pMethod}">${paymentIcons[pMethod] || '💵'} ${paymentLabels[pMethod] || 'Cash'}</span>
+            </div>
           </div>
         </div>`;
     }).join('');

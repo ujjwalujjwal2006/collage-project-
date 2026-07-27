@@ -109,10 +109,22 @@ function renderCartItems() {
   `).join('');
 }
 
+function selectPayment(method) {
+  document.querySelectorAll('.payment-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.method === method);
+  });
+}
+
+function getSelectedPayment() {
+  const active = document.querySelector('.payment-btn.active');
+  return active ? active.dataset.method : 'cash';
+}
+
 function showCheckout() {
   document.getElementById('cart-footer').style.display = 'none';
   document.getElementById('cart-items').style.display = 'none';
   document.getElementById('checkout-form').classList.remove('hidden');
+  selectPayment('cash'); // Reset to Cash by default
 }
 
 function hideCheckout() {
